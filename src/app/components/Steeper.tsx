@@ -99,7 +99,7 @@ const handleComplete = async () => {
     // login successful
     console.log(result); // result contains the payload
   } catch (err) {
-    // login failed
+    
     console.error(err);
   } finally {
     setIsLoading(false);

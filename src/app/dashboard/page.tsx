@@ -1,5 +1,11 @@
+import NavigationMiddleware from "../lib/NavigationMiddleware";
+
 export default function page() {
+
   return (
-    <div>page</div>
+
+    <div>
+      <NavigationMiddleware/>
+      page</div>
   )
 }

@@ -1,14 +1,35 @@
+'use client'
+
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
+
+
+// verify jwt token expiration
+// parses payload using base64, checks if current time is greater than exp time
+// doesn't touch localStorage (so it's SSR-safe)
+export const isTokenExpired = (jwtToken: string): boolean => {
+  try {
+    const payload = JSON.parse(atob(jwtToken.split(".")[1]));
+    const currentTime = Date.now() / 1000;
+    console.log(payload);
+
+    return payload.exp < currentTime;
+  } catch {
+    return true;
+  }
+};
+
+
 
 // interfaces declaration for typed safety
 //ClientState is the interface for initialState of the data
 
 interface ClientState {
-  clientData: LoginResponse,
+  clientData: ClientLogin,
   error: any;
   loading: boolean;
   isAuthenticated: boolean;
+  token: string;
 }
 
 //credentials is the interface for the credentials formdata
@@ -20,10 +41,19 @@ interface Credentials {
 
 //login response is the interface for clientdata state and function returning payload.
 
-interface LoginResponse {
+interface ClientLogin {
   name: string;
   email: string;
   username: string;
+
+}
+
+// login response declaration
+
+interface loginResponse {
+  clientData: ClientLogin;
+  token: string;
+  status: string;
 }
 
 // initialState declaration 
@@ -36,6 +66,7 @@ const initialState: ClientState = {
     username: '',
   },
   error: '',
+  token: "",
   loading: false,
   isAuthenticated: false,
 };
@@ -46,16 +77,19 @@ const initialState: ClientState = {
 // return payload such as basic information
 // this runs one time login
 // the token doesn't restore automatically
-// we have to re-login after 7 days for safety
+// we have to re-login after 30 days for safety
 
 export const loginClient = createAsyncThunk(
     'login/client',
     async( credentials:Credentials ,ThunkAPI)=>{
         try {
             console.log(process.env.NEXT_PUBLIC_BACKEND_URL)
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth`,
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/clients/login`,
                 credentials
             )
+          
+              localStorage.setItem('client_session', response.data.token)
+              isTokenExpired(response.data.token)
             return response.data;
         } catch (error:any) {
             return ThunkAPI.rejectWithValue(error.data?.message || "Login Failed.")
@@ -94,11 +128,18 @@ const logoutClient = async () => {
 const clientSlice = createSlice({
   name: 'client',
   initialState,
-  reducers: {},
+  reducers:{
+  setIsAuthenticated: (state, action) => {
+    state.isAuthenticated = action.payload;
+  },
+  setLoading: (state, action)=>{
+    state.loading = action.payload;
+  }
+},
   extraReducers: (builder) => {
     builder
-      .addCase(loginClient.fulfilled, (state, action: PayloadAction<LoginResponse>) => {
-        state.clientData = action.payload;
+      .addCase(loginClient.fulfilled, (state, action: PayloadAction<loginResponse>) => {
+        state.clientData = action.payload.clientData;
         state.isAuthenticated = true;
         state.error = '';
         state.loading = false;
@@ -116,5 +157,5 @@ const clientSlice = createSlice({
   }
 });
 
-export const { } = clientSlice.actions;
+export const { setIsAuthenticated, setLoading } = clientSlice.actions;
 export default clientSlice.reducer;

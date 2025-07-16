@@ -1,6 +1,9 @@
+import NavigationMiddleware from "@/app/lib/NavigationMiddleware";
 
 export default function page() {
   return (
-    <div>projects</div>
+    <div>
+      <NavigationMiddleware/>
+      projects</div>
   )
 }
