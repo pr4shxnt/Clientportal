@@ -1,17 +1,11 @@
-import React from 'react';
-
-interface ProjectPageProps {
-  params: {
-    projectId: string;
-  };
-}
-
-const ProjectPage = ({ params }: ProjectPageProps) => {
+export default function ProjectPage({
+  params,
+}: {
+  params: { projectId: string };
+}) {
   return (
-    <main className=''>
+    <main className="">
       <p>Project ID: {params.projectId}</p>
     </main>
   );
-};
-
-export default ProjectPage;
+}
