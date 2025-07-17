@@ -1,14 +1,8 @@
-
-interface ProjectPageProps {
-  params: {
-    projectId: string;
-  };
-}
-
-export default function ProjectPage({ params }: ProjectPageProps) {
-  return (
-    <main className="">
-      <p>Project ID: {params.projectId}</p>
-    </main>
-  );
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ projectId: string }>
+}) {
+  const { projectId } = await params
+  return <div>My Post: {projectId}</div>
 }
