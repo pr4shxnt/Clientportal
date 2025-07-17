@@ -26,7 +26,7 @@ export const isTokenExpired = (jwtToken: string): boolean => {
 
 interface ClientState {
   clientData: ClientLogin,
-  error: any;
+  error: string;
   loading: boolean;
   isAuthenticated: boolean;
   token: string;
@@ -34,7 +34,7 @@ interface ClientState {
 
 //credentials is the interface for the credentials formdata
 
-interface Credentials {
+export interface Credentials {
   username: string;
   password: string;
 }
@@ -91,48 +91,21 @@ export const loginClient = createAsyncThunk(
               localStorage.setItem('client_session', response.data.token)
               isTokenExpired(response.data.token)
             return response.data;
-        } catch (error:any) {
-            return ThunkAPI.rejectWithValue(error.data?.message || "Login Failed.")
+        } catch (error:unknown) {
+            return ThunkAPI.rejectWithValue((error as unknown as { data?: { message?: string } }).data?.message || "Login Failed.")
         }
     }
 )
-
-// verify authentication of client
-// goes to backend with token id and return boolean value
-// isAuthenticated manipulation is done with this function
-// this function runs everytime a component is mounted
-
-const checkAuth = createAsyncThunk(
-    'verify/client',
-    async(ssid:string, ThunkAPI) =>{
-        try {
-            const response = await axios.post(`${process.env.BACKEND_URL}/auth/verify`,
-                ssid
-            )
-            return response.data.state;
-        } catch (error:any) {
-            return ThunkAPI.rejectWithValue(error.data?.message || "Login Failed.")
-        }
-    }
-)
-
-// logout handler for clients
-
-const logoutClient = async () => {
-    setTimeout(()=>{
-        console.log("logging out")
-    },3000)
-}
 
 
 const clientSlice = createSlice({
   name: 'client',
   initialState,
   reducers:{
-  setIsAuthenticated: (state, action) => {
+  setIsAuthenticated: (state, action: PayloadAction<boolean>) => {
     state.isAuthenticated = action.payload;
   },
-  setLoading: (state, action)=>{
+  setLoading: (state, action: PayloadAction<boolean>)=>{
     state.loading = action.payload;
   }
 },
@@ -145,12 +118,12 @@ const clientSlice = createSlice({
         state.loading = false;
       })
       .addCase(loginClient.rejected, (state, action) => {
-        state.error = action.payload || "Login failed.";
+        state.error = typeof action.payload === 'string' ? action.payload : '';
         state.isAuthenticated = false;
         state.loading = false;
       })
       .addCase(loginClient.pending, (state)=>{
-        state.error = null;
+        state.error = '';
         state.loading = true;
         state.isAuthenticated = false;
       })

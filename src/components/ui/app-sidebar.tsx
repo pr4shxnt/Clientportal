@@ -2,23 +2,18 @@
 
 import * as React from "react"
 import {
-  IconCamera,
   IconChartArcs,
   IconChartBar,
   IconDashboard,
   IconDatabase,
-  IconFileAi,
-  IconFileDescription,
   IconFileWord,
   IconFolder,
   IconHelp,
   IconInnerShadowTop,
-  IconListDetails,
   IconPaperBag,
   IconReport,
   IconSearch,
   IconSettings,
-  IconUsers,
 } from "@tabler/icons-react"
 
 import { NavDocuments } from "./nav-document"
@@ -33,9 +28,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { ChartBarBig, Paperclip } from "lucide-react"
+import { useSelector } from "react-redux";
+import type { RootState } from '../../app/store'; // adjust path if needed
 
 const data = {
   user: {
@@ -56,7 +51,7 @@ const data = {
     },
     {
       title: "Projects",
-      url: "#",
+      url: "projects",
       icon: IconFolder,
     },
     {
@@ -107,6 +102,7 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  useSelector((state: RootState) => state.auth);
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>

@@ -4,9 +4,10 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { isTokenExpired, setIsAuthenticated } from '../store/slices/clientSlice';
+import type { RootState } from '../store';
 
 export default function NavigationMiddleware() {
-  const { isAuthenticated, loading } = useSelector((state: any) => state.auth);
+  const { isAuthenticated, loading } = useSelector((state: RootState) => state.auth);
   const router = useRouter();
   console.log(isAuthenticated);
 
@@ -28,16 +29,10 @@ const [initialLoad, setInitialLoad] = useState(true);
     }
   }, [dispatch, token]);
 
-useEffect(() => {
-  const timer = setTimeout(() => {
-    setInitialLoad(false); // After 2 seconds, allow loading to control initialLoad
-  }, 2000);
 
-  return () => clearTimeout(timer);
-}, []);
 
 useEffect(() => {
-  if (!initialLoad) { // Only update from loading AFTER initial 2 seconds have passed
+  if (initialLoad) { // Only update from loading AFTER initial 2 seconds have passed
     setInitialLoad(loading);
   }
 }, [loading, initialLoad]);

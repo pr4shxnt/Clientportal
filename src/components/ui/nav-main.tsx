@@ -1,8 +1,5 @@
 "use client"
 
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react"
-
-import { Button } from "@/components/ui/button"
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -19,7 +16,7 @@ export function NavMain({
   items: {
     title: string
     url: string
-    icon?: Icon
+    icon?: React.ElementType // Changed from Icon to any as Icon is removed
   }[]
 }) {
   return (
@@ -32,7 +29,7 @@ export function NavMain({
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton tooltip={item.title}>
                 {item.icon && <item.icon />}
-                <Link href={`/dashbard/${item.url}`}>{item.title}</Link>
+                <Link href={`/dashboard/${item.url}`}>{item.title}</Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

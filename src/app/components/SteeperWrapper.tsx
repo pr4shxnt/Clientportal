@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Stepper, { Step } from "./Steeper";
 import { Eye, EyeOff } from "lucide-react";
 import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 export default function SteeperComponent() {
   const [username, setUsername] = useState<string>("");
@@ -11,7 +12,7 @@ export default function SteeperComponent() {
   const [isCredentials, setIsCredentials] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const {error} = useSelector((state:any)=> state.auth)
+  const {error} = useSelector((state: RootState) => state.auth)
 
   console.log(error)
 

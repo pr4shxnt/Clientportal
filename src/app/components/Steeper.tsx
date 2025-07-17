@@ -1,21 +1,14 @@
 "use client";
 
-import React, {
-  useState,
-  Children,
-  useRef,
-  useLayoutEffect,
-  HTMLAttributes,
-  ReactNode,
-  useEffect,
-} from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { useDispatch } from "react-redux";
 import { loginClient } from "../store/slices/clientSlice";
 import { AppDispatch } from "../store";
+import type { Credentials } from "../store/slices/clientSlice";
 
-interface StepperProps extends HTMLAttributes<HTMLDivElement> {
-  children: ReactNode;
+interface StepperProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
   initialStep?: number;
   onStepChange?: (step: number) => void;
   onFinalStepCompleted?: () => void;
@@ -27,22 +20,20 @@ interface StepperProps extends HTMLAttributes<HTMLDivElement> {
   nextButtonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
   backButtonText?: string;
   nextButtonText?: string;
-  disableStepIndicators?: boolean;
   isCredentials?: boolean;
-  credentials? : any;
+  credentials?: Credentials;
   renderStepIndicator?: (props: {
     step: number;
     currentStep: number;
     isCredentials?: boolean;
-    onStepClick: (clicked: number) => void;
-  }) => ReactNode;
+  }) => React.ReactNode;
 }
 
 export default function Stepper({
   children,
   initialStep = 1,
   onStepChange = () => {},
-  onFinalStepCompleted = () => {},
+  onFinalStepCompleted,
   stepCircleContainerClassName = "",
   stepContainerClassName = "",
   contentClassName = "",
@@ -51,7 +42,6 @@ export default function Stepper({
   nextButtonProps = {},
   backButtonText = "Back",
   nextButtonText = "Continue",
-  disableStepIndicators = false,
   isCredentials = true,
   credentials,
   renderStepIndicator,
@@ -60,7 +50,7 @@ export default function Stepper({
   const [currentStep, setCurrentStep] = useState<number>(initialStep);
   const [direction, setDirection] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const stepsArray = Children.toArray(children);
+  const stepsArray = React.Children.toArray(children);
   const totalSteps = stepsArray.length;
   const isCompleted = currentStep > totalSteps;
   const isLastStep = currentStep === totalSteps;
@@ -68,13 +58,10 @@ export default function Stepper({
 
   const updateStep = (newStep: number) => {
     setCurrentStep(newStep);
-    if (newStep > totalSteps) {
-    } else {
+    if (newStep <= totalSteps) {
       onStepChange(newStep);
     }
   };
-
-  console.log(credentials)
 
   const handleBack = () => {
     if (currentStep > 1 && !isLoading) {
@@ -87,31 +74,31 @@ export default function Stepper({
     if (!isLastStep && !isLoading) {
       setDirection(1);
       updateStep(currentStep + 1);
+    } else if (isLastStep) {
+      if (onFinalStepCompleted) {
+        onFinalStepCompleted();
+      }
+      setDirection(1);
+      updateStep(currentStep + 1);
     }
   };
 
-const handleComplete = async () => {
-  setIsLoading(true);
-  setDirection(1);
+  const handleComplete = async () => {
+    setIsLoading(true);
+    setDirection(1);
 
-  try {
-    const result = await dispatch(loginClient(credentials)).unwrap();
-    // login successful
-    console.log(result); // result contains the payload
-  } catch (err) {
-    
-    console.error(err);
-  } finally {
-    setIsLoading(false);
-  }
-};
-
+    try {
+      const result = await dispatch(loginClient(credentials!)).unwrap();
+      console.log(result);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div
-      className="flex min-h-full flex-1 flex-col items-center justify-center p-4 "
-      {...rest}
-    >
+    <div className="flex min-h-full flex-1 flex-col items-center justify-center p-4 " {...rest}>
       <div
         className={`mx-auto w-full max-w-md rounded-4xl shadow-xl ${stepCircleContainerClassName}`}
         style={{ border: "1px solid #222" }}
@@ -127,29 +114,15 @@ const handleComplete = async () => {
                     step: stepNumber,
                     currentStep,
                     isCredentials,
-                    onStepClick: (clicked) => {
-                      if (!isLoading) {
-                        setDirection(clicked > currentStep ? 1 : -1);
-                        updateStep(clicked);
-                      }
-                    },
                   })
                 ) : (
                   <StepIndicator
                     step={stepNumber}
-                    disableStepIndicators={disableStepIndicators}
+                    
                     currentStep={currentStep}
-                    onClickStep={(clicked) => {
-                      if (!isLoading) {
-                        setDirection(clicked > currentStep ? 1 : -1);
-                        updateStep(clicked);
-                      }
-                    }}
                   />
                 )}
-                {isNotLastStep && (
-                  <StepConnector isComplete={currentStep > stepNumber} />
-                )}
+                {isNotLastStep && <StepConnector isComplete={currentStep > stepNumber} />}
               </React.Fragment>
             );
           })}
@@ -172,11 +145,7 @@ const handleComplete = async () => {
 
         {!isCompleted && !isLoading && (
           <div className={`px-8 pb-8 ${footerClassName}`}>
-            <div
-              className={`mt-10 flex ${
-                currentStep !== 1 ? "justify-between" : "justify-end"
-              }`}
-            >
+            <div className={`mt-10 flex ${currentStep !== 1 ? "justify-between" : "justify-end"}`}>
               {currentStep !== 1 && (
                 <button
                   onClick={handleBack}
@@ -232,7 +201,7 @@ interface StepContentWrapperProps {
   isCompleted: boolean;
   currentStep: number;
   direction: number;
-  children: ReactNode;
+  children: React.ReactNode;
   className?: string;
 }
 
@@ -268,7 +237,7 @@ function StepContentWrapper({
 }
 
 interface SlideTransitionProps {
-  children: ReactNode;
+  children: React.ReactNode;
   direction: number;
   onHeightReady: (height: number) => void;
 }
@@ -278,9 +247,9 @@ function SlideTransition({
   direction,
   onHeightReady,
 }: SlideTransitionProps) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
 
-  useLayoutEffect(() => {
+  React.useLayoutEffect(() => {
     if (containerRef.current) {
       const measuredHeight = containerRef.current.offsetHeight;
       onHeightReady(measuredHeight * 1.1);
@@ -318,26 +287,18 @@ const stepVariants: Variants = {
   }),
 };
 
-interface StepProps {
-  children: ReactNode;
-}
-
-export function Step({ children }: StepProps) {
+export function Step({ children }: { children: React.ReactNode }) {
   return <div className="px-8">{children}</div>;
 }
 
 interface StepIndicatorProps {
   step: number;
   currentStep: number;
-  onClickStep: (clicked: number) => void;
-  disableStepIndicators?: boolean;
 }
 
 function StepIndicator({
   step,
   currentStep,
-  onClickStep,
-  disableStepIndicators = false,
 }: StepIndicatorProps) {
   const status =
     currentStep === step
@@ -346,15 +307,8 @@ function StepIndicator({
       ? "inactive"
       : "complete";
 
-  const handleClick = () => {
-    if (step !== currentStep && !disableStepIndicators) {
-      return
-    }
-  };
-
   return (
     <motion.div
-      onClick={handleClick}
       className="relative cursor-pointer outline-none focus:outline-none"
       animate={status}
       initial={false}
@@ -417,12 +371,7 @@ function CheckIcon(props: CheckIconProps) {
       <motion.path
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
-        transition={{
-          delay: 0.1,
-          type: "tween",
-          ease: "easeOut",
-          duration: 0.3,
-        }}
+        transition={{ delay: 0.1, type: "tween", ease: "easeOut", duration: 0.3 }}
         strokeLinecap="round"
         strokeLinejoin="round"
         d="M5 13l4 4L19 7"
