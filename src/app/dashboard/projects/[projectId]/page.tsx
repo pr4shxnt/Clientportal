@@ -1,17 +1,17 @@
 import React from 'react';
 
 interface ProjectPageProps {
-    params: {
-        projectId: string;
-    };
+  params: {
+    projectId: string;
+  };
 }
 
-const ProjectPage = async ({ params }: ProjectPageProps) => {
-    return (
-        <main className=''>
-            <p>Project ID: {params.projectId}</p>
-        </main>
-    );
+const ProjectPage = ({ params }: ProjectPageProps) => {
+  return (
+    <main className=''>
+      <p>Project ID: {params.projectId}</p>
+    </main>
+  );
 };
 
 export default ProjectPage;
