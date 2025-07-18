@@ -1,8 +1,10 @@
 'use client'
 
-type Props = {}
+import Image from "next/image";
 
-const ProfileTag = (props: Props) => {
+
+
+const ProfileTag = () => {
     const getGreeting = () =>{
         const today = new Date();
         const hour = today.getHours();
@@ -13,7 +15,7 @@ const ProfileTag = (props: Props) => {
   return (
     <div>
         <div className=" w-48 px-2 bg-popover hover:bg-gray-600/40 transition-all  duration-300 flex items-center justify-between overflow-hidden relative text-popover-foreground border p-1 shadow-md rounded-2xl ">
-        <img src="" alt="" className="h-8 w-8 rounded-full" />
+        <Image src="" alt="" className="h-8 w-8 rounded-full" />
         <div className="flex flex-col pr-5">
             <h1 className="text-lg font-semibold">Hi, Prashant</h1>
             <p className="text-xs">{getGreeting()} ❣️</p>
