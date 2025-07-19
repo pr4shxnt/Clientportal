@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import clientReducer from './slices/clientSlice'
+import projectReducer from './slices/clientProjectSlice'
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
-      auth: clientReducer
+      auth: clientReducer,
+      git: projectReducer,
     }
   })
 }
