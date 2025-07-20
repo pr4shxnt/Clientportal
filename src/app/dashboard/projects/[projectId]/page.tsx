@@ -1,4 +1,5 @@
 import {GitGraph} from "./GitGraph"
+import GitActivity from "./GitActivity"
 
 export default async function Page({
   params,
@@ -9,5 +10,6 @@ export default async function Page({
   return <div className="m-5"> 
   {projectId}
   <GitGraph/>
+  <GitActivity/>
   </div>
 }

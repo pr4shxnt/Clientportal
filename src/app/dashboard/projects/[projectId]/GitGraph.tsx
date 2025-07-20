@@ -55,7 +55,7 @@ export function GitGraph() {
   React.useEffect(() => {
     dispatch(
       getCommitdata({
-        repo: "Prashant",
+        repo: "clientportal",
         createdAt: "2025-03-17T00:00:00Z",
       }),
     )
@@ -114,8 +114,8 @@ export function GitGraph() {
     <Card className="pt-0 rounded-2xl">
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1">
-          <CardTitle>Commits Over Time</CardTitle>
-          <CardDescription>Number of commits by day</CardDescription>
+          <CardTitle>Track your project workflow</CardTitle>
+          <CardDescription>Number of commit messages per day</CardDescription>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger
