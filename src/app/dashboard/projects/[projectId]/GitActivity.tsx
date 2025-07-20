@@ -10,7 +10,6 @@ import {
   TableRow,
   TableHead,
   TableCell,
-  TableCaption,
 } from '@/components/ui/table';
 import Image from 'next/image';
 
@@ -95,7 +94,7 @@ const GitActivity = () => {
               <TableCell colSpan={columns.length}>No commits found.</TableCell>
             </TableRow>
           ) : (
-            rows.map((row: any, idx: number) => (
+            rows.map((row, idx: number) => (
               <TableRow key={idx}>
                 <TableCell><input type="checkbox" /></TableCell>
                 <TableCell>{formatDate(row.date)}</TableCell>
