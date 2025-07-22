@@ -51,7 +51,7 @@ const GitActivity = () => {
   useEffect(() => {
     dispatch(
       getCommitdetails({
-        repo: 'clientportal',
+        repo: 'jevee-frontend',
         createdAt: '2025-03-17T00:00:00Z',
         page:1
       })

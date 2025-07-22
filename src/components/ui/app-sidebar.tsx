@@ -56,7 +56,7 @@ const data = {
     },
     {
       title: "Chat",
-      url: "#",
+      url: "chat",
       icon: IconChartArcs,
     },
     {
