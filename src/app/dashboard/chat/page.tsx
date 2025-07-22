@@ -27,7 +27,7 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="flex flex-col h-[89vh] md:h-[85vh]">
+    <div className="flex flex-col h-[89svh] md:h-[85vh]">
       <div className="flex-1 w-[98%] md:w-[80%] mx-auto custom-scrollbar overflow-y-auto p-5 space-y-2">
         {messages.map((msg) => (
           <div
