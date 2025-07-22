@@ -4,7 +4,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addMessage, sendMessageToServer } from "@/app/store/slices/chatSlice";
 import { AppDispatch, RootState } from "@/app/store";
-import ReactMarkDown from "react-markdown"
+import ReactMarkDown from "react-markdown";
 import Image from "next/image";
 
 const ChatPage = () => {
@@ -58,32 +58,52 @@ const ChatPage = () => {
                 </div>
               )}
               <div className="text-sm">
-              <ReactMarkDown>{msg.text}</ReactMarkDown></div>
-              
+                <ReactMarkDown
+                  components={{
+                    a: ({ href, children }) => (
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-300 underline font-bold hover:text-blue-300"
+                      >
+                        {children}
+                      </a>
+                    ),
+                  }}
+                >
+                  {msg.text}
+                </ReactMarkDown>
+              </div>
             </div>
           </div>
         ))}
         {loading && (
-  <div className="flex justify-start">
-    <div className="px-4 flex gap-3 py-2 items-center  rounded-3xl max-w-xs md:max-w-lg bg-popover text-gray-300">
-      <div className="flex gap-2 items-center">
-        <Image
-          src="https://avatars.githubusercontent.com/u/130303397?v=4"
-          height={20}
-          width={20}
-          className="aspect-square h-6 w-6 rounded-full"
-          alt="admin profile"
-        />
-      </div>
-      <div className="flex space-x-1 h-full items-center justify-center">
-        <div className="animate-bounce h-full flex items-center [animation-delay:-0.3s]"><div className=" h-1 w-1 bg-white rounded-full"></div></div>
-        <div className="animate-bounce h-full flex items-center [animation-delay:-0.15s]"><div className=" h-1 w-1 bg-white rounded-full"></div></div>
-        <div className="animate-bounce h-full flex items-center "><div className=" h-1 w-1 bg-white rounded-full"></div></div>
-
-      </div>
-    </div>
-  </div>
-)}
+          <div className="flex justify-start">
+            <div className="px-4 flex gap-3 py-2 items-center  rounded-3xl max-w-xs md:max-w-lg bg-popover text-gray-300">
+              <div className="flex gap-2 items-center">
+                <Image
+                  src="https://avatars.githubusercontent.com/u/130303397?v=4"
+                  height={20}
+                  width={20}
+                  className="aspect-square h-6 w-6 rounded-full"
+                  alt="admin profile"
+                />
+              </div>
+              <div className="flex space-x-1 h-full items-center justify-center">
+                <div className="animate-bounce h-full flex items-center [animation-delay:-0.3s]">
+                  <div className=" h-1 w-1 bg-white rounded-full"></div>
+                </div>
+                <div className="animate-bounce h-full flex items-center [animation-delay:-0.15s]">
+                  <div className=" h-1 w-1 bg-white rounded-full"></div>
+                </div>
+                <div className="animate-bounce h-full flex items-center ">
+                  <div className=" h-1 w-1 bg-white rounded-full"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div ref={messagesEndRef} />
       </div>
@@ -100,7 +120,11 @@ const ChatPage = () => {
         <button
           type="submit"
           disabled={loading}
-          className={` text-white px-4 py-2 rounded-full ${loading? "bg-purple-300 transition-all duration-300":"bg-purple-500 transition-all duration-300"}`}
+          className={` text-white px-4 py-2 rounded-full ${
+            loading
+              ? "bg-purple-300 transition-all duration-300"
+              : "bg-purple-500 transition-all duration-300"
+          }`}
         >
           <ArrowRightCircleIcon />
         </button>
