@@ -4,7 +4,7 @@ import axios from 'axios';
 interface Message {
   id: number;
   text: string;
-  sender: 'me' | 'other';
+  sender: 'me' | 'ai';
 }
 
 interface ChatState {
@@ -18,7 +18,7 @@ const initialState: ChatState = {
     {
       id: 1,
       text: 'This chatbot is powered by Google Gemini Flash 2.0. Your chat is end-to-end encrypted. I did not struggle to store it in the database for client privacy. Avoid refreshing that could clear the chat.',
-      sender: 'other',
+      sender: 'ai',
     },
   ],
   loading: false,
@@ -41,7 +41,7 @@ export const sendMessageToServer = createAsyncThunk<
         pastMessages: chat.messages,
       });
 
-      return { id: Date.now(), text: res.data.reply, sender: 'other' };
+      return { id: Date.now(), text: res.data.reply, sender: 'ai' };
     } catch (error: unknown) {
       return rejectWithValue( (error as unknown as { data?: { message?: string } }).data?.message || 'Failed to fetch response');
     }
