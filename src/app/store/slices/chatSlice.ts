@@ -17,7 +17,7 @@ const initialState: ChatState = {
   messages: [
     {
       id: 1,
-      text: 'This chatbot is powered by Google Gemini Flash 2.0. Your chat is end-to-end encrypted. I did not struggle to store it in the database for client privacy.',
+      text: 'This chatbot is powered by Google Gemini Flash 2.0. Your chat is end-to-end encrypted. I did not struggle to store it in the database for client privacy. Avoid refreshing that could clear the chat.',
       sender: 'other',
     },
   ],
