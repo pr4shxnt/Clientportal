@@ -115,25 +115,40 @@ const GitActivity = ({RepoName, RepoOwner}:{
               <TableCell className='text-center' colSpan={columns.length}>No commits found.</TableCell>
             </TableRow>
           ) : (
-            rows.map((row, idx) => (
-              <TableRow key={idx}>
-                <TableCell><input type="checkbox" /></TableCell>
-                <TableCell>{formatDate(row.date)}</TableCell>
-                <TableCell>{row.message}</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-3">
-                    <Image
-                      src={row.profilePicture}
-                      alt=""
-                      width={30}
-                      height={30}
-                      className="rounded-full"
-                    />
-                    <p className="hidden md:block">{row.author || '-'}</p>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))
+           <>
+           {rows.map((row, idx) => (
+  <TableRow key={idx}>
+    <TableCell><input type="checkbox" /></TableCell>
+    <TableCell>{formatDate(row.date)}</TableCell>
+    <TableCell>{row.message}</TableCell>
+    <TableCell>
+      <div className="flex items-center gap-3">
+        <Image
+          src={row.profilePicture}
+          alt=""
+          width={30}
+          height={30}
+          className="rounded-full"
+        />
+        <p className="hidden md:block">{row.author || '-'}</p>
+      </div>
+    </TableCell>
+  </TableRow>
+))}
+
+{/* Fill empty rows to always show 10 rows */}
+{rows.length < perPage &&
+  Array.from({ length: perPage - rows.length }).map((_, i) => (
+    <TableRow key={`empty-${i}`}>
+      <TableCell>&nbsp;</TableCell>
+      <TableCell>&nbsp;</TableCell>
+      <TableCell>&nbsp;</TableCell>
+      <TableCell>&nbsp;</TableCell>
+    </TableRow>
+  ))
+}
+
+           </>
           )}
         </TableBody>
       </Table>
