@@ -1,14 +1,7 @@
-import {GitGraph} from "./GitGraph"
-import GitActivity from "./GitActivity"
+// app/dashboard/projects/[projectId]/page.tsx
+import ClientPage from "./ClientPage";
 
-export default async function Page({
-  // params,
-}: {
-  params: Promise<{ projectId: string }>
-}) {
-  // const { projectId } = await params
-  return <div className="m-5"> 
-  <GitGraph/>
-  <GitActivity/>
-  </div>
+export default async function Page({ params }: { params: { projectId: string } }) {
+  const {projectId} = await params ;
+  return <ClientPage projectId={projectId} />;
 }

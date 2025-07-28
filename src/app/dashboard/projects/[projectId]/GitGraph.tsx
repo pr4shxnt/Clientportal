@@ -1,6 +1,6 @@
 "use client"
 
-import * as React from "react"
+import {useEffect, useMemo, useState} from "react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 
 import {
@@ -48,23 +48,29 @@ function fillMissingDates(data: { date: string; count: number }[]) {
   return filled
 }
 
-export function GitGraph() {
+export function GitGraph({RepoName, RepoOwner}:{
+  RepoName: string, RepoOwner: string
+}) {
   const dispatch = useDispatch<AppDispatch>()
-  const { gitData } = useSelector((state: RootState) => state.git)
+  const { gitData } = useSelector((state: RootState) => state.projects)
 
-  React.useEffect(() => {
+ 
+  useEffect(() => {
+     if(RepoName && RepoOwner){
     dispatch(
       getCommitdata({
-        repo: "clientportal",
+        owner: RepoOwner,
+        repo: RepoName,
         createdAt: "2025-03-17T00:00:00Z",
-      }),
-    )
-  }, [dispatch])
 
-  const [timeRange, setTimeRange] = React.useState("90d")
+      }),
+    )}
+  }, [ dispatch, RepoOwner, RepoName])
+
+  const [timeRange, setTimeRange] = useState("90d")
 
   // Defensive: make sure gitData is array of correct shape
-  const rawData = React.useMemo(() => (
+  const rawData = useMemo(() => (
     Array.isArray(gitData)
       ? gitData
           .map(item => {
@@ -86,17 +92,17 @@ export function GitGraph() {
   ), [gitData]);
 
   // Sort ascending by date
-  const sortedData = React.useMemo(() => {
+  const sortedData = useMemo(() => {
     return rawData.slice().sort((a, b) => {
       return new Date(a.date).getTime() - new Date(b.date).getTime()
     })
   }, [rawData])
 
   // Fill missing dates
-  const filledData = React.useMemo(() => fillMissingDates(sortedData), [sortedData])
+  const filledData = useMemo(() => fillMissingDates(sortedData), [sortedData])
 
   // Filter by time range (7d, 30d, 90d)
-  const filteredData = React.useMemo(() => {
+  const filteredData = useMemo(() => {
     if (!filledData.length) return []
 
     const now = new Date()

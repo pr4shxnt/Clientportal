@@ -1,17 +1,70 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// Define the shape of a project
+export interface Project {
+  _id: string;
+  Name: string;
+  Description: string;
+}
+
+export interface ProjectIndividual {
+  Name: string;
+  ClientId: string,
+  Description: string,
+  Cost: string | number;
+  Discount: string | number;
+  Revenue: string | number;
+  isApproved: boolean;
+  _id: string;
+  Agreement: string;
+  RepoName: string;
+  RepoOwner: string;
+  Completion: string;
+  Deadline: string;
+  createdAt: string;
+  lastUpdated: string;
+}
+
+// Define the shape of a commit
+export interface GitCommit {
+  date: string;
+  message: string;
+  author?: string;
+}
+
+// Final state shape for the slice
 interface ProjectState {
-  gitData: Record<string, number> | Array<string>;
-  gitCommits: Record<string, { date: string; message: string; author?: string }> | string;
+  gitData: Record<string, number> | string[]; // can be refined based on actual use
+  gitCommits: Record<string, GitCommit> | string; // string if empty, otherwise commit map
   loading: boolean;
+  projects: Project[];
+  project: ProjectIndividual;
   error: string | null;
 }
 
 const initialState: ProjectState = {
   gitData: [],
   gitCommits: "",
+  projects:[],
   loading: false,
+  project: {
+    Name: "",
+    ClientId: "",
+    Description: "",
+    Cost: "",
+    Discount: "",
+    Revenue: "",
+    isApproved: false,
+    _id: "",
+    Agreement: "",
+    RepoName: "",
+    RepoOwner: "",
+    Completion: "",
+    Deadline: "",
+    createdAt: "",
+    lastUpdated: ""
+  },
   error: null,
 };
 
@@ -36,14 +89,14 @@ function getErrorMessage(error: unknown): string {
 export const getCommitdetails = createAsyncThunk(
   'projects/getCommits',
   async (
-    { repo, createdAt, page }: { repo: string; createdAt: string; page?: number },
+    { repo, owner, createdAt, page }: { repo: string; owner: string; createdAt: string; page?: number },
     ThunkAPI
   ) => {
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/client/projects/commits`,
         {
-          owner: "pr4shxnt",
+          owner,
           repo,
           createdAt,
           page
@@ -59,14 +112,14 @@ export const getCommitdetails = createAsyncThunk(
 export const getCommitdata = createAsyncThunk(
   'projects/getCommitsData',
   async (
-    { repo, createdAt, page }: { repo: string; createdAt: string; page?: number },
+    { repo, owner, createdAt, page }: { repo: string; owner: string, createdAt: string; page?: number },
     ThunkAPI
   ) => {
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/client/projects/data`,
         {
-          owner: "pr4shxnt",
+          owner, // value should be passed dynamically to the thunk
           repo,
           createdAt,
           page
@@ -79,6 +132,50 @@ export const getCommitdata = createAsyncThunk(
     }
   }
 );
+
+
+export const getProjects = createAsyncThunk(
+  'fetch/projects',
+  async (token: string, ThunkAPI) => {
+    try {
+      if(!token) return console.log('no token')
+
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/client/projects/${token}`, 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error: unknown) {
+      const message = getErrorMessage(error);
+      return ThunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+
+export const getProjectByIdAndToken = createAsyncThunk(
+  'fetch/project',
+  async(projectId: string, ThunkAPI)=>{
+    try {
+      const token = localStorage.getItem('client_session')
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/client/projects/${projectId}/token/${token}`,
+        {headers:{
+          "Authorization" : `Bearer ${token}`
+        }}
+      )
+
+      return response.data;
+    } catch (error: unknown) {
+const message = getErrorMessage(error);
+      return ThunkAPI.rejectWithValue(message);
+        }
+  }
+)
+
 
 // Slice
 const projectSlice = createSlice({
@@ -116,7 +213,33 @@ const projectSlice = createSlice({
         state.error = action.payload as string;
         state.gitData = [];
         state.gitCommits = "";
-      });
+      })
+      .addCase(getProjects.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getProjects.fulfilled, (state, action) => {
+        state.loading = false;
+        state.projects = action.payload;
+        state.error = null;
+      })
+      .addCase(getProjects.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(getProjectByIdAndToken.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getProjectByIdAndToken.fulfilled, (state, action) => {
+        state.loading = false;
+        state.project = action.payload[0];
+        state.error = null;
+      })
+      .addCase(getProjectByIdAndToken.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
   },
 });
 

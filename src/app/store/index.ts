@@ -8,7 +8,7 @@ export const makeStore = () => {
   return configureStore({
     reducer: {
       auth: clientReducer,
-      git: projectReducer,
+      projects: projectReducer,
       chat: chatReducer,
     }
   })
