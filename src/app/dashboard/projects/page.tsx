@@ -2,7 +2,7 @@ import ProjectsClient from "./ProjectsClient";
 
 export default function page() {
   return (
-    <div className="m-5">
+    <div className="m-2">
       {/* <section className="flex flex-col items-center">
         <h1 className="pb-3 pl-2 w-full text-start">Create a new project...</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 md:gap-10 max-w-md sm:max-w-full md:max-w-3xl lg:max-w-none mx-auto w-full overflow-x-auto">
