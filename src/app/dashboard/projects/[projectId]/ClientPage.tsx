@@ -33,10 +33,10 @@ export default function ClientPage({ projectId }: { projectId: string }) {
 
   return (
     <div className="m-5">
-      <div className="flex mb-20 justify-start gap-20">
+      <div className="flex md:flex-row flex-col mb-20 justify-start md:gap-20">
         {" "}
         <ProjectDescription title={project.Name} description={project.Description} owner={project.RepoOwner} repo={project.RepoName} deadline={project.Deadline}/>
-        <div className="flex justify-end gap-20 w-full"><Arc
+        <div className="flex md:flex-row flex-col justify-end gap-10 mt-10 md:gap-20 w-full"><Arc
           percentage={percentageValue}
           color={chooseColor(percentageValue)}
         />

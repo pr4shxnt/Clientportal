@@ -62,7 +62,7 @@ const Arc: React.FC<ArcProps> = ({
       {/* Percentage Text */}
       {showPercentage && (
         <div
-          className="absolute inset-0 flex flex-col items-center  justify-center"
+          className="absolute w-full h-full flex flex-col items-center  justify-center"
           style={{
             width: size,
             height: size,
