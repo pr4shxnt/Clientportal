@@ -10,7 +10,7 @@ type Props = {
 const ProfileEditForm = (props: Props) => {
   return (
     <div>
-
+      
     </div>
   )
 }
