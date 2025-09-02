@@ -1,8 +1,7 @@
+import EditPasswordForm from "../components/EditPasswordForm";
 
 const page = () => {
-  return (
-    <div>page</div>
-  )
-}
+  return <div></div>;
+};
 
-export default page
+export default page;

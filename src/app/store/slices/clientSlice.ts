@@ -42,11 +42,15 @@ export interface Credentials {
 //login response is the interface for clientdata state and function returning payload.
 
 interface ClientLogin {
+  _id: string;
   name: string;
   email: string;
   username: string;
-
+  profilePhoto: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
+
 
 // login response declaration
 
@@ -61,9 +65,13 @@ interface loginResponse {
 
 const initialState: ClientState = {
   clientData:{
-    name: '',
-    email: '',
-    username: '',
+    _id: "",
+  name: "",
+  email: "",
+  username: "",
+  profilePhoto: null,
+  createdAt: "",
+  updatedAt: "",
   },
   error: '',
   token: "",
@@ -97,6 +105,19 @@ export const loginClient = createAsyncThunk(
     }
 )
 
+export const getClientDetails = createAsyncThunk(
+  'fetch/client',
+  async(token: any, ThunkAPI)=>{
+    try {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/clients/${token}`)
+
+      return response.data;
+    } catch (error:any) {
+      return ThunkAPI.rejectWithValue(error.data.message || "Fetching client data failed")
+    }
+  }
+)
+
 
 const clientSlice = createSlice({
   name: 'client',
@@ -126,6 +147,19 @@ const clientSlice = createSlice({
         state.error = '';
         state.loading = true;
         state.isAuthenticated = false;
+      })
+      .addCase(getClientDetails.fulfilled, (state, action:any) => {
+        state.clientData = action.payload;
+        state.error = '';
+        state.loading = false;
+      })
+      .addCase(getClientDetails.rejected, (state, action) => {
+        state.error = typeof action.payload === 'string' ? action.payload : '';
+        state.loading = false;
+      })
+      .addCase(getClientDetails.pending, (state)=>{
+        state.error = '';
+        state.loading = true;
       })
   }
 });
