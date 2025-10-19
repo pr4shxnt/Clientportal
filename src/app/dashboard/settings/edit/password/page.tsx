@@ -123,5 +123,3 @@ const EditPasswordForm = (props: Props) => {
     </form>
   );
 };
-
-export default EditPasswordForm;
