@@ -72,7 +72,7 @@ const ChatPage = () => {
                     ),
                   }}
                 >
-                  {msg.text}
+                  {msg.text.replace(/\\n/g, "\n")}
                 </ReactMarkDown>
               </div>
             </div>
