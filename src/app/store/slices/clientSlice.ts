@@ -78,10 +78,8 @@ export const loginClient = createAsyncThunk(
       isTokenExpired(response.data.token);
 
       return response.data;
-    } catch (error: any) {
-      return ThunkAPI.rejectWithValue(
-        error.response?.data?.message || "Login Failed."
-      );
+    } catch (error: unknown) {
+      return ThunkAPI.rejectWithValue( (error as unknown as { data?: { message?: string } }).data?.message || 'Failed to fetch response');
     }
   }
 );
@@ -95,10 +93,8 @@ export const getClientDetails = createAsyncThunk(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/clients/${id}`
       );
       return response.data;
-    } catch (error: any) {
-      return ThunkAPI.rejectWithValue(
-        error.response?.data?.message || "Fetching client data failed"
-      );
+    } catch (error: unknown) {
+      return ThunkAPI.rejectWithValue( (error as unknown as { data?: { message?: string } }).data?.message || 'Failed to fetch response');
     }
   }
 );
@@ -116,10 +112,8 @@ export const updateClientDetails = createAsyncThunk(
         formData
       );
       return response.data;
-    } catch (error: any) {
-      return ThunkAPI.rejectWithValue(
-        error.response?.data?.message || "Updating client failed"
-      );
+    }catch (error: unknown) {
+      return ThunkAPI.rejectWithValue( (error as unknown as { data?: { message?: string } }).data?.message || 'Failed to fetch response');
     }
   }
 );
@@ -161,7 +155,7 @@ const clientSlice = createSlice({
       })
 
       // --- Get Client ---
-      .addCase(getClientDetails.fulfilled, (state, action: any) => {
+      .addCase(getClientDetails.fulfilled, (state, action) => {
         state.clientData = action.payload;
         state.error = "";
         state.loading = false;
@@ -176,7 +170,7 @@ const clientSlice = createSlice({
       })
 
       // --- Update Client ---
-      .addCase(updateClientDetails.fulfilled, (state, action: any) => {
+      .addCase(updateClientDetails.fulfilled, (state, action) => {
         state.clientData = action.payload;
         state.error = "";
         state.loading = false;
